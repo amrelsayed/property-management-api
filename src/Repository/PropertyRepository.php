@@ -5,22 +5,31 @@ namespace App\Repository;
 use App\Entity\Property;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LoggerInterface;
 
 /**
  * @extends ServiceEntityRepository<Property>
  */
 class PropertyRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private LoggerInterface $logger)
     {
         parent::__construct($registry, Property::class);
     }
 
     public function save(Property $property): void
     {
-        $this->getEntityManager()->persist($property);
+        try {
+            $this->getEntityManager()->persist($property);
 
-        $this->getEntityManager()->flush();
+            $this->getEntityManager()->flush();
+
+            $this->logger->info('New property added', [$property->getTitle()]);
+        } catch (\Throwable $th) {
+            $this->logger->error('Saving Property Error', ['exception' => $th]);
+
+            throw $th;
+        }
     }
 
     //    /**
