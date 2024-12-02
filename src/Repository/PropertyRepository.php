@@ -23,10 +23,21 @@ class PropertyRepository extends ServiceEntityRepository
             $this->getEntityManager()->persist($property);
 
             $this->getEntityManager()->flush();
-
-            $this->logger->info('New property added', [$property->getTitle()]);
         } catch (\Throwable $th) {
             $this->logger->error('Saving Property Error', ['exception' => $th]);
+
+            throw $th;
+        }
+    }
+
+    public function remove(Property $property): void
+    {
+        try {
+            $this->getEntityManager()->remove($property);
+
+            $this->getEntityManager()->flush();
+        } catch (\Throwable $th) {
+            $this->logger->error('Deleting Property Error', ['exception' => $th]);
 
             throw $th;
         }
