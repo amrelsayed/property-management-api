@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\PropertyRepository;
+use Doctrine\DBAL\Types\DecimalType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PropertyRepository::class)]
+#[ORM\Table(name: "property")]
 class Property
 {
     #[ORM\Id]
@@ -14,15 +17,40 @@ class Property
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank]
+    #[Assert\Type('string')]
+    #[Assert\Length(
+        min: 5,
+        max: 255,
+        minMessage: 'Title must be at least {{ limit }} characters long',
+        maxMessage: 'Title cannot be longer than {{ limit }} characters',
+    )]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
+    #[Assert\NotBlank]
+    #[Assert\Type('string')]
+    #[Assert\Length(
+        min: 5,
+        minMessage: 'Description must be at least {{ limit }} characters long',
+    )]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    #[Assert\NotBlank]
+    #[Assert\Positive]
+    #[Assert\Type('numeric')]
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $price = null;
 
+    #[Assert\NotBlank]
+    #[Assert\Type('string')]
+    #[Assert\Length(
+        min: 5,
+        max: 255,
+        minMessage: 'Location must be at least {{ limit }} characters long',
+        maxMessage: 'Location cannot be longer than {{ limit }} characters',
+    )]
     #[ORM\Column(length: 255)]
     private ?string $location = null;
 

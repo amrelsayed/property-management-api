@@ -16,7 +16,14 @@ class PropertyRepository extends ServiceEntityRepository
         parent::__construct($registry, Property::class);
     }
 
-//    /**
+    public function save(Property $property): void
+    {
+        $this->getEntityManager()->persist($property);
+
+        $this->getEntityManager()->flush();
+    }
+
+    //    /**
 //     * @return Property[] Returns an array of Property objects
 //     */
 //    public function findByExampleField($value): array
@@ -31,7 +38,7 @@ class PropertyRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Property
+    //    public function findOneBySomeField($value): ?Property
 //    {
 //        return $this->createQueryBuilder('p')
 //            ->andWhere('p.exampleField = :val')
