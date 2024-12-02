@@ -4,13 +4,16 @@ namespace App\Controller;
 
 use App\DTO\PropertyDTO;
 use App\Entity\Property;
+use App\Event\PropertyCreatedEvent;
+use App\Event\PropertyDeletedEvent;
+use App\Event\PropertyUpdatedEvent;
 use App\Repository\PropertyRepository;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[Route('api')]
 class PropertyController extends AbstractController
@@ -20,7 +23,7 @@ class PropertyController extends AbstractController
     public function __construct(
         private PropertyRepository $propertyRepository,
         private ValidatorInterface $validator,
-        private LoggerInterface $logger
+        private EventDispatcherInterface $eventDispatcher
     ) {
     }
 
@@ -41,8 +44,8 @@ class PropertyController extends AbstractController
         # save
         $this->propertyRepository->save($property);
 
-        # log
-        $this->logger->info('New property added', [$property->getTitle()]);
+        # log and notify
+        $this->eventDispatcher->dispatch(new PropertyCreatedEvent($property));
 
         # return
         return $this->json([
@@ -73,8 +76,8 @@ class PropertyController extends AbstractController
         # save
         $this->propertyRepository->save($property);
 
-        # log 
-        $this->logger->info('Propery updated', [$property->getTitle()]);
+        # log and notify
+        $this->eventDispatcher->dispatch(new PropertyUpdatedEvent($property));
 
         # return 
         return $this->json([
@@ -112,8 +115,8 @@ class PropertyController extends AbstractController
         # remote
         $this->propertyRepository->remove($property);
 
-        # log 
-        $this->logger->info('Propery deleted', [$property->getTitle()]);
+        # log and notify
+        $this->eventDispatcher->dispatch(new PropertyDeletedEvent($property));
 
         # return
         return $this->json([
