@@ -16,8 +16,8 @@ final class PropertyDeletedListener
     public function onPropertyCreatedEvent($event): void
     {
         $this->logger->info('Property deleted', [
-            'Property ID' => $event->getProperty()->getId(),
-            'Porperty Title' => $event->getProperty()->getTitle()
+            'ID' => $event->getProperty()->getId(),
+            'Title' => $event->getProperty()->getTitle()
         ]);
     }
 }

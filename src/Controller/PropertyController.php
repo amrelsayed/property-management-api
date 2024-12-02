@@ -6,6 +6,7 @@ use App\DTO\PropertyDTO;
 use App\Entity\Property;
 use App\Event\PropertyCreatedEvent;
 use App\Event\PropertyDeletedEvent;
+use App\Event\PropertyStatusUpdatedEvent;
 use App\Event\PropertyUpdatedEvent;
 use App\Repository\PropertyRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -121,6 +122,36 @@ class PropertyController extends AbstractController
         # return
         return $this->json([
             'message' => 'Property deleted!',
+        ]);
+    }
+
+    #[Route('/properties/{id}/status', name: 'property_status_update', methods: ['PUT'])]
+    public function updateStatus(Request $request, int $id): JsonResponse
+    {
+        # check
+        $property = $this->propertyRepository->find($id);
+
+        if (!$property) {
+            return $this->json(['error' => 'Property not found.'], 404);
+        }
+
+        # validate
+        $data = $request->toArray();
+
+        if (!isset($data['status']) || !in_array($data['status'], Property::STATUS)) {
+            return $this->json(['errors' => ['status' => 'should be one of the following values: ' . implode(', ', Property::STATUS)]], 400);
+        }
+
+        # save
+        $property->setStatus($data['status']);
+        $this->propertyRepository->save($property);
+
+        # log and notify
+        $this->eventDispatcher->dispatch(new PropertyStatusUpdatedEvent($property));
+
+        # return 
+        return $this->json([
+            'message' => 'Property status updated!',
         ]);
     }
 

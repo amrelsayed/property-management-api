@@ -26,6 +26,7 @@ class PropertyDTO
         $this->title = $property->getTitle();
         $this->description = $property->getDescription();
         $this->price = $property->getPrice();
+        $this->status = $property->getStatus();
         $this->location = $property->getLocation();
         $this->createdAt = $property->getCreatedAt();
     }

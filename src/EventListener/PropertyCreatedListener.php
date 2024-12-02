@@ -16,8 +16,8 @@ final class PropertyCreatedListener
     public function onPropertyCreatedEvent($event): void
     {
         $this->logger->info('New property added', [
-            'Property ID' => $event->getProperty()->getId(),
-            'Porperty Title' => $event->getProperty()->getTitle()
+            'ID' => $event->getProperty()->getId(),
+            'Title' => $event->getProperty()->getTitle()
         ]);
     }
 }

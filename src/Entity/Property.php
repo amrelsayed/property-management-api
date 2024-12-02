@@ -12,6 +12,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: "property")]
 class Property
 {
+    const AVAILABLE = 'available';
+    const UNDER_REVIEW = 'under_review';
+    const APPROVED = 'approved';
+    const SOLD = 'sold';
+
+    const STATUS = [
+        self::AVAILABLE,
+        self::UNDER_REVIEW,
+        self::APPROVED,
+        self::SOLD
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
