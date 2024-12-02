@@ -28,6 +28,32 @@ class PropertyController extends AbstractController
     ) {
     }
 
+    #[Route('/properties', name: 'properties_list', methods: ['get'])]
+    public function index(Request $request): JsonResponse
+    {
+        # set
+        $limit = (int) $request->query->get('limit', 10);
+        $page = (int) $request->query->get('page', 1);
+        $status = $request->query->get('status');
+
+        # get
+        $properties = $this->propertyRepository->list($page, $limit, $status);
+
+        $data = PropertyDTO::fromArray($properties);
+
+        # return
+        return $this->json([
+            'message' => 'Propery list',
+            'data' => $data,
+            'meta' => [
+                'currentPage' => $page,
+                'perPage' => $limit,
+                'totalItems' => count($properties),
+                'totalPages' => ceil(count($properties) / $limit)
+            ]
+        ]);
+    }
+
     #[Route('/properties', name: 'properties_create', methods: ['post'])]
     public function create(Request $request): JsonResponse
     {

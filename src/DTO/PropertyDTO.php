@@ -6,6 +6,8 @@ use App\Entity\Property;
 
 class PropertyDTO
 {
+    use DTOTrait;
+
     public int $id;
 
     public string $title;
