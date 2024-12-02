@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DTO\PropertyDTO;
 use App\Entity\Property;
 use App\Repository\PropertyRepository;
 use Psr\Log\LoggerInterface;
@@ -92,14 +93,7 @@ class PropertyController extends AbstractController
         }
 
         # prepare
-        $data = [
-            'id' => $property->getId(),
-            'title' => $property->getTitle(),
-            'description' => $property->getDescription(),
-            'price' => $property->getPrice(),
-            'location' => $property->getLocation(),
-            'createdAt' => $property->getCreatedAt()
-        ];
+        $data = new PropertyDTO($property);
 
         # return
         return $this->json($data);
